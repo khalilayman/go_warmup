@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Première note",
+    "content": "Ceci est le contenu de la première note.",
+    "tags": ["go", "test"]
+  },
+  {
+    "title": "Deuxième note",
+    "content": "Contenu de la deuxième note.",
+    "tags": ["go", "exemple"]
+  },
+  {
+    "title": "Troisième note",
+    "content": "Cette note n'a pas le tag go.",
+    "tags": ["autre"]
+  }
+]

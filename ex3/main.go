@@ -2,14 +2,17 @@ package main
 
 import(
 	"fmt"
+	"bufio"
+	"encoding/json"
+	"os"
 )
 
 func main(){
 	type Note struct {
-		Title   string
-		Content string
-		Tags 	[] string
-	}
+	Title   string   `json:"title"`
+	Content string   `json:"content"`
+	Tags    []string `json:"tags"`
+}
 
 NewNote(title, content string) *Note{
 	return &Note{
@@ -39,3 +42,43 @@ func (n *Note) addtag(tag string)
 
 }
 
+func LoadFromFile(path string) ([]*Note, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("open %s: %w", path, err)
+	}
+	defer f.Close()
+
+	var notes []*Note
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&notes); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	return notes, nil
+}
+
+func main() {
+	n := NewNote("Intro Go", "Go est un langage compilé, simple et rapide, idéal pour les APIs.")
+	n.AddTag("go")
+	n.AddTag("go")
+	n.AddTag("backend")
+
+	fmt.Println("Titre   :", n.Title)
+	fmt.Println("Preview :", n.Preview())
+	fmt.Println("Tags    :", n.Tags)
+
+	notes, err := LoadFromFile("notes.json")
+	if err != nil {
+		fmt.Println("Erreur chargement:", err)
+		return
+	}
+
+	fmt.Println("\nNotes taguées 'go' :")
+	for _, note := range notes {
+		for _, tag := range note.Tags {
+			if tag == "go" {
+				fmt.Printf("- %s : %s\n", note.Title, note.Preview())
+				break
+			}
+		}
+	}
+}
